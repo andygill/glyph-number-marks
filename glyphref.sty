@@ -1,0 +1,64 @@
+% codelabel hack
+% adds \glyph{<number>} to the envionvironment, as well as
+%
+%   glyphs={1,2,4:lab}
+%   glyphsprefix=foo
+% to the fancyvrb package.
+% This gives a label, \ref{foo:lab}, omitting the prefix command allows for no prefix.
+
+\RequirePackage{keyval}
+\RequirePackage{fancyvrb}
+\RequirePackage{pifont}
+
+\def\glyph#1{%
+  \ifcase#1\or
+  \ding{'266}\or
+  \ding{'267}\or
+  \ding{'270}\or
+  \ding{'271}\or
+  \ding{'272}\or
+  \ding{'273}\or
+  \ding{'274}\or
+  \ding{'275}\or
+  \ding{'276}\or
+  \ding{'277}\else\@ctrerr\fi}
+
+\newcount\codeglyphcount
+
+% The trick here is to use expandafter to match the :'s, such that 'foo' => \...foo::, and 'foo:bar' => \ ...foo:bar::,
+% and the final argument consumes the rest of the token streams.
+
+\def\cl@index#1,{%
+  \ifx\relax#1\else\expandafter\optshow@glyph#1::\relax\advance\codeglyphcount by 1\expandafter\cl@index\fi}
+
+\def\optshow@glyph#1:#2:#3\relax{%
+  \ifnum\c@FancyVerbLine=#1%
+     \relax\glyph{\number\codeglyphcount}%
+     \ifx\@empty#3\@empty\else\protected@edef\@currentlabel{\glyph{\number\codeglyphcount}}\label{\glyphprefixname#2}\fi%
+  \fi}
+
+% need to reset properly
+\def\codelabel@marklist{}
+
+\define@key{FV}{glyphprefix}[none]{%
+  \def\@tempa{#1}%
+  \ifx\@tempa\FV@None\def\glyphprefixname{}\else%
+  \def\glyphprefixname{#1:}\fi
+}
+
+\setkeys{FV}{glyphprefix}
+
+% implys numbers=left, obviously
+% TODO: idea, have glyph=123, instead, and can have multiple arguments.
+
+\define@key{FV}{glyphs}[none]{%
+  \def\@tempa{#1}%
+  \def\@tempb{\codelabel@marklist}%
+  \write\@mainaux{comment{Hello, #1 (\codelabel@marklist)}}%
+  \ifx\@tempa\FV@None\def\theFancyVerbLine{\rmfamily\tiny\arabic{FancyVerbLine}}\else
+  \def\theFancyVerbLine{\codeglyphcount=1\expandafter\cl@index\codelabel@marklist,\relax,}
+  \FV@Numbers@left\relax
+  \def\codelabel@marklist{#1}\fi}
+
+\setkeys{FV}{glyphs=none}
+

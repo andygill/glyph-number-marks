@@ -1,0 +1,30 @@
+\documentclass[11pt]{article}
+
+\usepackage{glyphref}
+
+\DefineVerbatimEnvironment{Code}{Verbatim}{frame=lines,framerule=0.25pt}
+
+\begin{document}
+
+\begin{Code}[glyphs={1:foo}]
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+\end{Code}
+
+And \ref{foo} for example.
+
+\begin{Code}[glyphs=4,glyphs={1:foo2,2:bar,8:vboo},glyphprefix=foo,glyphprefix=bar]
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+The quick brown \code|fox| jumped over the \code=lazy= dog.
+\end{Code}
+
+And \ref{foo:vboo} for example.
+
+\end{document}
